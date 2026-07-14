@@ -58,10 +58,6 @@ export default async function CajaPage() {
     .from("parties").select("id, name").in("kind", ["cliente", "ambos"]).order("name");
   const clientes: ClienteLite[] = (data ?? []).map((c) => ({ id: c.id, name: c.name }));
 
-  const { data: provData } = await supabase
-    .from("parties").select("id, name").in("kind", ["proveedor", "ambos"]).order("name");
-  const proveedores: ClienteLite[] = (provData ?? []).map((p) => ({ id: p.id, name: p.name }));
-
   // Medios de cobro de la org (con su comisión) para acreditar tarjeta/QR
   const { data: finData } = await supabase
     .from("fin_accounts")
@@ -84,7 +80,6 @@ export default async function CajaPage() {
   return (
     <CajaClient
       clientes={clientes}
-      proveedores={proveedores}
       products={products}
       branchId={branchId ?? ""}
       qrWallets={qrWallets}

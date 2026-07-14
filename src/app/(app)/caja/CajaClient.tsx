@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import Topbar from "@/components/Topbar";
 import Icon from "@/components/Icon";
 import { money } from "@/lib/seed";
-import { cobrarACuenta, pagarProveedor } from "../ventas/actions";
 import { registrarEgreso } from "../ventas/egreso";
 import { PosBoard, type ClienteLite, type PosItem, type QrWallet, type PayAccount } from "../ventas/VentasPOS";
 
@@ -25,15 +24,18 @@ const MEDIO_META: Record<string, { label: string; icon: string; led: string }> =
   cheque: { label: "Cheque", icon: "receipt", led: "amber" },
 };
 
+/** Medios de cobro del mostrador: efectivo, tarjeta y QR (sin cuenta corriente). */
+const POS_METHODS = ["efectivo", "tarjeta", "qr"];
+
 /**
- * Ventana única del operador: su caja individual con las ventas integradas.
- * Arriba, el saldo del día por medio (ingresos − egresos) con drill-down a los
- * movimientos. Opera cobros a cuenta, pagos a proveedor y egresos (gasto/retiro),
- * y vende con todos los medios (PosBoard). El POS es el mismo de /ventas.
+ * Ventana única del mostrador: la caja con las ventas integradas.
+ * Vende con efectivo / tarjeta / QR (PosBoard) y registra egresos de caja
+ * (gasto / retiro). Arriba, el saldo del día por medio con drill-down (oculto
+ * para el cajero). No hay cuenta corriente ni pagos a proveedor: este producto
+ * es solo mostrador, sin los módulos que generan esas deudas.
  */
 export default function CajaClient({
   clientes,
-  proveedores,
   products,
   branchId,
   qrWallets,
@@ -44,7 +46,6 @@ export default function CajaClient({
   showSaldos = true,
 }: {
   clientes: ClienteLite[];
-  proveedores: ClienteLite[];
   products: PosItem[];
   branchId: string;
   qrWallets: QrWallet[];
@@ -56,17 +57,7 @@ export default function CajaClient({
   showSaldos?: boolean;
 }) {
   const [openMedio, setOpenMedio] = useState<string | null>(null);
-  const [panel, setPanel] = useState<null | "cobro" | "pago" | "egreso">(null);
-
-  const [cobCliente, setCobCliente] = useState("");
-  const [cobMonto, setCobMonto] = useState("");
-  const [cobBusy, startCob] = useTransition();
-  const [cobFlash, setCobFlash] = useState<{ ok: boolean; text: string } | null>(null);
-
-  const [pagProv, setPagProv] = useState("");
-  const [pagMonto, setPagMonto] = useState("");
-  const [pagBusy, startPag] = useTransition();
-  const [pagFlash, setPagFlash] = useState<{ ok: boolean; text: string } | null>(null);
+  const [panel, setPanel] = useState<null | "egreso">(null);
 
   const [egKind, setEgKind] = useState<"gasto" | "retiro">("gasto");
   const [egConcepto, setEgConcepto] = useState("");
@@ -79,42 +70,6 @@ export default function CajaClient({
     ok
       ? { background: "color-mix(in srgb,var(--green) 12%,transparent)", color: "var(--green)", borderColor: "color-mix(in srgb,var(--green) 30%,transparent)" }
       : { background: "color-mix(in srgb,var(--red) 12%,transparent)", color: "var(--red)", borderColor: "color-mix(in srgb,var(--red) 30%,transparent)" };
-
-  function cobrarCuenta() {
-    const monto = parseMonto(cobMonto);
-    if (!cobCliente) { setCobFlash({ ok: false, text: "Elegí el cliente." }); return; }
-    if (!(monto > 0)) { setCobFlash({ ok: false, text: "Ingresá el importe a cobrar." }); return; }
-    setCobFlash(null);
-    startCob(async () => {
-      const res = await cobrarACuenta({ partyId: cobCliente, amount: monto, instrument: "efectivo", source: "caja", sourceRef: cajaName });
-      if (!res.ok) { setCobFlash({ ok: false, text: res.error ?? "No se pudo registrar." }); return; }
-      let text: string;
-      if (res.error) text = `Cobro ${money(monto)} registrado, pero la conciliación falló: ${res.error} → Excepciones`;
-      else if (!res.conciliated) text = `Cobro ${money(monto)} registrado · pendiente de conciliación → Bandeja de excepciones`;
-      else if ((res.credit ?? 0) > 0) text = `Cobrado ${money(monto)} · crédito a favor ${money(res.credit!)} → Excepciones`;
-      else text = `Cobrado ${money(monto)} · imputado a facturas ✓`;
-      setCobFlash({ ok: !res.error, text });
-      if (!res.error) { setCobMonto(""); setCobCliente(""); }
-    });
-  }
-
-  function pagar() {
-    const monto = parseMonto(pagMonto);
-    if (!pagProv) { setPagFlash({ ok: false, text: "Elegí el proveedor." }); return; }
-    if (!(monto > 0)) { setPagFlash({ ok: false, text: "Ingresá el importe a pagar." }); return; }
-    setPagFlash(null);
-    startPag(async () => {
-      const res = await pagarProveedor({ partyId: pagProv, amount: monto, sourceRef: cajaName });
-      if (!res.ok) { setPagFlash({ ok: false, text: res.error ?? "No se pudo registrar." }); return; }
-      let text: string;
-      if (res.error) text = `Pago ${money(monto)} registrado, pero la conciliación falló: ${res.error} → Excepciones`;
-      else if (!res.conciliated) text = `Pago ${money(monto)} en efectivo registrado · pendiente de autorización → Bandeja de excepciones`;
-      else if ((res.credit ?? 0) > 0) text = `Pagado ${money(monto)} · saldo a favor ${money(res.credit!)} → Excepciones`;
-      else text = `Pagado ${money(monto)} en efectivo · imputado a facturas del proveedor ✓`;
-      setPagFlash({ ok: !res.error, text });
-      if (!res.error) { setPagMonto(""); setPagProv(""); }
-    });
-  }
 
   function registrarEg() {
     const monto = parseMonto(egMonto);
@@ -135,7 +90,7 @@ export default function CajaClient({
     <>
       <Topbar title="Ventas / Caja" subtitle={`${cajaName} · ${operator}`} />
       <div className="cx-view">
-        {/* Mi caja + acciones de caja */}
+        {/* Mi caja + acción de egreso */}
         <div className="card card-pad" style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 15 }}>
           <div style={{ width: 42, height: 42, borderRadius: 12, display: "grid", placeItems: "center", background: "var(--acc-soft)", fontSize: 20 }}>🧾</div>
           <div style={{ minWidth: 0 }}>
@@ -143,8 +98,6 @@ export default function CajaClient({
             <div className="muted" style={{ fontSize: 12 }}>Operador: {operator} · <span style={{ color: "var(--green)" }}>turno abierto</span></div>
           </div>
           <span style={{ flex: 1 }} />
-          <button className={"btn" + (panel === "cobro" ? " btn-primary" : "")} onClick={() => { setPanel((p) => (p === "cobro" ? null : "cobro")); setCobFlash(null); }}><Icon name="users" size={16} /> Cobrar a cuenta</button>
-          <button className={"btn" + (panel === "pago" ? " btn-primary" : "")} onClick={() => { setPanel((p) => (p === "pago" ? null : "pago")); setPagFlash(null); }}><Icon name="truck" size={16} /> Pago proveedor</button>
           <button className={"btn" + (panel === "egreso" ? " btn-primary" : "")} onClick={() => { setPanel((p) => (p === "egreso" ? null : "egreso")); setEgFlash(null); }}><Icon name="wallet" size={16} /> Registrar egreso</button>
         </div>
 
@@ -196,34 +149,6 @@ export default function CajaClient({
         </div>
         </>)}
 
-        {/* Cobro a cuenta corriente (efectivo) */}
-        {panel === "cobro" && (
-          <div className="card card-pad" style={{ marginBottom: 15, borderColor: "var(--acc-line)" }}>
-            <div className="cx-panel-h" style={{ marginBottom: 10 }}><h3 style={{ fontSize: 14 }}>Cobro a cuenta corriente · efectivo</h3><span className="muted" style={{ fontSize: 11 }}>imputa por FIFO a las facturas del cliente</span></div>
-            <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr auto", gap: 10, alignItems: "end" }}>
-              <div className="field" style={{ margin: 0 }}><label>Cliente</label>
-                <select className="inp" value={cobCliente} onChange={(e) => setCobCliente(e.target.value)}><option value="">Elegí el cliente…</option>{clientes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
-              <div className="field" style={{ margin: 0 }}><label>Importe</label><input className="inp" value={cobMonto} onChange={(e) => setCobMonto(e.target.value)} placeholder="0" inputMode="decimal" /></div>
-              <button className="btn btn-primary" onClick={cobrarCuenta} disabled={cobBusy} style={{ height: 40 }}>{cobBusy ? "…" : "Cobrar"}</button>
-            </div>
-            {cobFlash && <div className="note" style={{ marginTop: 10, ...flashStyle(cobFlash.ok) }}><Icon name={cobFlash.ok ? "check" : "alert"} size={16} /><span>{cobFlash.text}</span></div>}
-          </div>
-        )}
-
-        {/* Pago a proveedor (efectivo) */}
-        {panel === "pago" && (
-          <div className="card card-pad" style={{ marginBottom: 15, borderColor: "var(--acc-line)" }}>
-            <div className="cx-panel-h" style={{ marginBottom: 10 }}><h3 style={{ fontSize: 14 }}>Pago a proveedor · efectivo</h3><span className="muted" style={{ fontSize: 11 }}>egreso de caja · imputa por FIFO a las facturas del proveedor</span></div>
-            <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr auto", gap: 10, alignItems: "end" }}>
-              <div className="field" style={{ margin: 0 }}><label>Proveedor</label>
-                <select className="inp" value={pagProv} onChange={(e) => setPagProv(e.target.value)}><option value="">Elegí el proveedor…</option>{proveedores.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div>
-              <div className="field" style={{ margin: 0 }}><label>Importe</label><input className="inp" value={pagMonto} onChange={(e) => setPagMonto(e.target.value)} placeholder="0" inputMode="decimal" /></div>
-              <button className="btn btn-primary" onClick={pagar} disabled={pagBusy} style={{ height: 40 }}>{pagBusy ? "…" : "Pagar"}</button>
-            </div>
-            {pagFlash && <div className="note" style={{ marginTop: 10, ...flashStyle(pagFlash.ok) }}><Icon name={pagFlash.ok ? "check" : "alert"} size={16} /><span>{pagFlash.text}</span></div>}
-          </div>
-        )}
-
         {/* Egreso de caja (gasto / retiro) */}
         {panel === "egreso" && (
           <div className="card card-pad" style={{ marginBottom: 15, borderColor: "var(--acc-line)" }}>
@@ -243,8 +168,8 @@ export default function CajaClient({
           </div>
         )}
 
-        {/* Ventas — mismo POS, con todos los medios de pago */}
-        <PosBoard clientes={clientes} products={products} branchId={branchId} qrWallets={qrWallets} cardAccounts={cardAccounts} />
+        {/* Ventas — POS del mostrador: efectivo / tarjeta / QR */}
+        <PosBoard clientes={clientes} products={products} branchId={branchId} qrWallets={qrWallets} cardAccounts={cardAccounts} methods={POS_METHODS} />
       </div>
     </>
   );
