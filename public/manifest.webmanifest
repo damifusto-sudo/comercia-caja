@@ -1,0 +1,11 @@
+{
+  "name": "Comercia Caja",
+  "short_name": "Caja",
+  "description": "Punto de venta con balanza y código de barras",
+  "start_url": "/ventas",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220"
+}
