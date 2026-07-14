@@ -38,9 +38,9 @@ export default function OnboardingClient({ defaultOrg, defaultName }: { defaultO
     <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 20 }}>
       <form onSubmit={crear} className="card" style={{ width: "100%", maxWidth: 400, padding: "26px 26px 22px", display: "flex", flexDirection: "column", gap: 12, background: "var(--panel-2)", borderColor: "var(--acc-line)", boxShadow: "0 20px 60px rgba(0,0,0,.5)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(150deg,var(--acc),#0c8f7f)", color: "#022", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 19, boxShadow: "0 0 20px var(--acc-glow)" }}>C</div>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(150deg,var(--acc),#1f66b8)", color: "#022", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 19, boxShadow: "0 0 20px var(--acc-glow)" }}>C</div>
           <div style={{ fontWeight: 700, fontSize: 17, color: "var(--ink-2)", lineHeight: 1.1 }}>
-            Comercia<small style={{ display: "block", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--dim)", fontWeight: 700 }}>Completá el alta</small>
+            Comercia Caja<small style={{ display: "block", fontSize: 9, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--dim)", fontWeight: 700 }}>Completá el alta</small>
           </div>
         </div>
         <h2 style={{ fontSize: 15, color: "var(--ink-2)", margin: "6px 0 0" }}>Creá tu comercio</h2>

@@ -36,7 +36,7 @@ export default async function AdminPage() {
     <main style={{ minHeight: "100vh", padding: "24px 28px" }}>
       <div style={{ maxWidth: 1080, margin: "0 auto", display: "flex", flexDirection: "column", gap: 18 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(150deg,var(--acc),#0c8f7f)", color: "#022", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 18 }}>C</div>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(150deg,var(--acc),#1f66b8)", color: "#022", display: "grid", placeItems: "center", fontWeight: 800, fontSize: 18 }}>C</div>
           <div style={{ flex: 1 }}>
             <div style={{ fontWeight: 700, fontSize: 18, color: "var(--ink-2)" }}>Panel del proveedor</div>
             <div className="muted" style={{ fontSize: 12 }}>Todos los comercios y sus suscripciones</div>

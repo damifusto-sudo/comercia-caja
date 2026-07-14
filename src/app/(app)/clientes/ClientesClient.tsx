@@ -87,7 +87,7 @@ export default function ClientesClient({ clientes, canEdit }: { clientes: Client
               <div className="cx-panel-h"><h3>Clientes</h3><span className="muted" style={{ fontSize: 11 }}>{list.length}</span></div>
               {list.map((c) => (
                 <button key={c.id} onClick={() => setSelId(c.id)} className="prov-item" style={c.id === sel?.id ? { background: "var(--acc-soft)" } : undefined}>
-                  <span className="avat" style={{ background: "linear-gradient(150deg,var(--acc),#0c8f7f)", color: "#022" }}>{initials(c.name)}</span>
+                  <span className="avat" style={{ background: "linear-gradient(150deg,var(--acc),#1f66b8)", color: "#022" }}>{initials(c.name)}</span>
                   <div style={{ flex: 1, textAlign: "left", minWidth: 0 }}>
                     <div style={{ fontWeight: 600, fontSize: 13, color: "var(--ink-2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
                     <div className="muted" style={{ fontSize: 11 }}>{c.taxId || c.city || "—"}</div>
@@ -104,7 +104,7 @@ export default function ClientesClient({ clientes, canEdit }: { clientes: Client
             {sel && (
               <div className="card">
                 <div className="cx-panel-h" style={{ gap: 12 }}>
-                  <span className="avat" style={{ background: "linear-gradient(150deg,var(--acc),#0c8f7f)", color: "#022", width: 42, height: 42, fontSize: 15 }}>{initials(sel.name)}</span>
+                  <span className="avat" style={{ background: "linear-gradient(150deg,var(--acc),#1f66b8)", color: "#022", width: 42, height: 42, fontSize: 15 }}>{initials(sel.name)}</span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h3 style={{ textTransform: "none", letterSpacing: "normal", fontSize: 16, color: "var(--ink-2)" }}>{sel.name}</h3>
                     <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", marginTop: 3 }}>
