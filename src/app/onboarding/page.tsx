@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function OnboardingPage() {
   const ctx = await requireContext();
-  if (ctx.orgId) redirect("/ventas");
+  if (ctx.orgId) redirect("/caja");
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

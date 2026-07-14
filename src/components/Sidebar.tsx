@@ -28,7 +28,7 @@ export default function Sidebar({
       ? [{
           group: "Operación",
           items: [
-            { href: "/caja", label: "Caja diaria", icon: "cash", accent: "#39d98a", ready: true },
+            { href: "/caja", label: "Ventas / Caja", icon: "cash", accent: "#00e6ff", ready: true },
             { href: "/offline", label: "Ventas offline", icon: "receipt", accent: "#f5a524", ready: true },
           ],
         }]

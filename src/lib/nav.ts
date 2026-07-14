@@ -15,10 +15,10 @@ export const NAV: NavGroup[] = [
   {
     group: "Mostrador",
     items: [
-      { href: "/ventas", label: "Ventas / POS", icon: "cart", accent: "#2fe6c8", ready: true },
-      { href: "/caja", label: "Caja diaria", icon: "cash", accent: "#39d98a", ready: true },
+      { href: "/caja", label: "Ventas / Caja", icon: "cash", accent: "#00e6ff", ready: true },
       { href: "/productos", label: "Productos y stock", icon: "box", accent: "#4be0a8", ready: true },
       { href: "/offline", label: "Ventas offline", icon: "receipt", accent: "#f5a524", ready: true },
+      { href: "/usuarios", label: "Usuarios y cajas", icon: "shield", accent: "#ff2bd6", ready: true },
     ],
   },
 ];

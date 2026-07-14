@@ -44,7 +44,7 @@ export default function SignupPage() {
         p_branch_name: "Casa central",
       });
       // Si falla la creación, el layout te lleva a /onboarding para reintentar (no quedás huérfano).
-      router.replace(rpcErr ? "/onboarding" : "/ventas");
+      router.replace(rpcErr ? "/onboarding" : "/caja");
       router.refresh();
     } catch {
       setErr("No se pudo completar el registro. Reintentá en unos segundos.");

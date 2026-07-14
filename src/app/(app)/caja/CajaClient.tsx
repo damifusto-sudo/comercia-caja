@@ -133,7 +133,7 @@ export default function CajaClient({
 
   return (
     <>
-      <Topbar title="Caja" subtitle={`${cajaName} · ${operator}`} />
+      <Topbar title="Ventas / Caja" subtitle={`${cajaName} · ${operator}`} />
       <div className="cx-view">
         {/* Mi caja + acciones de caja */}
         <div className="card card-pad" style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 15 }}>

@@ -31,8 +31,15 @@ export default async function AppLayout({
   const MOSTRADOR = (p: string) =>
     ["/caja", "/ventas", "/productos", "/offline"].some((r) => p === r || p.startsWith(r + "/"));
   const pathname = (await headers()).get("x-pathname") ?? "";
-  if (ctx.orgId && pathname && !MOSTRADOR(pathname) && pathname !== "/onboarding" && pathname !== "/suscripcion") {
-    redirect(ctx.role === "cajero" ? "/caja" : "/ventas");
+  // /usuarios (alta de cajas) es sólo para admin; el cajero queda en su caja.
+  const isUsuarios = pathname === "/usuarios" || pathname.startsWith("/usuarios/");
+  const allowed =
+    MOSTRADOR(pathname) ||
+    pathname === "/onboarding" ||
+    pathname === "/suscripcion" ||
+    (isUsuarios && ctx.role !== "cajero");
+  if (ctx.orgId && pathname && !allowed) {
+    redirect("/caja");
   }
   const badges: Record<string, string> = {};
 

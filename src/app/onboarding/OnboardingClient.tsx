@@ -24,7 +24,7 @@ export default function OnboardingClient({ defaultOrg, defaultName }: { defaultO
     });
     setBusy(false);
     if (error) { setErr(error.message); return; }
-    router.replace("/ventas");
+    router.replace("/caja");
     router.refresh();
   }
 

@@ -20,7 +20,7 @@ export default async function Landing() {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) redirect("/ventas");
+    if (user) redirect("/caja");
   } catch { /* sin sesión / sin conexión → mostramos la landing */ }
 
   return (

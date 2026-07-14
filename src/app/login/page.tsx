@@ -44,7 +44,7 @@ export default function LoginPage() {
         .select("role")
         .limit(1)
         .maybeSingle();
-      router.replace(m?.role === "cajero" ? "/caja" : "/ventas");
+      router.replace("/caja");
       router.refresh();
     } catch {
       setErr("No se pudo conectar. Verificá la configuración de Supabase.");

@@ -2,7 +2,7 @@
   "name": "Comercia Caja",
   "short_name": "Caja",
   "description": "Punto de venta con balanza y código de barras",
-  "start_url": "/ventas",
+  "start_url": "/caja",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
