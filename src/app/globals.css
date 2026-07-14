@@ -410,15 +410,16 @@ a { color: inherit; }
 }
 
 /* ── Landing de ventas ─────────────────────────────────────────────────── */
-.lp { min-height:100vh; background:radial-gradient(120% 80% at 50% -8%, #0a1a33 0%, var(--bg1) 46%, var(--bg0) 100%); }
-.lp-nav { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px 26px; backdrop-filter:blur(9px); background:linear-gradient(180deg,rgba(6,15,16,.88),rgba(6,15,16,.35)); border-bottom:1px solid var(--acc-line); }
+/* Landing sobre el fondo CYBER del body (azul eléctrico + grilla + scanlines). */
+.lp { min-height:100vh; background:transparent; }
+.lp-nav { position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px 26px; backdrop-filter:blur(9px); background:linear-gradient(180deg,rgba(4,20,52,.82),rgba(4,20,52,.32)); border-bottom:1px solid var(--acc-line); }
 .lp-logo { display:flex; align-items:center; gap:10px; font-weight:750; font-size:16px; color:var(--ink-2); }
 .lp-mk { width:32px;height:32px;border-radius:9px;background:linear-gradient(150deg,var(--acc),#1f66b8);color:#022;display:grid;place-items:center;font-weight:800;font-size:16px;box-shadow:0 0 16px var(--acc-glow); }
 .lp-wrap { max-width:1080px; margin:0 auto; padding:0 24px; }
 .lp-hero { text-align:center; padding:78px 22px 52px; }
 .lp-badge { display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--acc); border:1px solid var(--acc-line); background:var(--acc-soft); border-radius:20px; padding:7px 14px; }
 .lp-h1 { font-size:clamp(32px,6.2vw,54px); font-weight:800; color:var(--ink-2); line-height:1.04; letter-spacing:-.02em; text-wrap:balance; margin:22px auto 0; max-width:14ch; }
-.lp-h1 .g { background:linear-gradient(115deg,var(--acc),#66e6a6); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.lp-h1 .g { background:linear-gradient(115deg,var(--acc),var(--mg)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 .lp-sub { font-size:clamp(15px,2.3vw,19px); color:var(--dim); max-width:600px; margin:20px auto 0; line-height:1.55; }
 .lp-cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:30px; }
 .lp-btn-lg { padding:14px 26px; font-size:15px; border-radius:12px; }
