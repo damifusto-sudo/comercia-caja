@@ -4,14 +4,16 @@
    Comercia · Sistema de diseño (dark táctico · familia teal)
    ========================================================================== */
 :root {
-  --bg0:#04090b; --bg1:#081215; --panel:rgba(11,23,26,.72); --panel-2:rgba(8,17,20,.92);
-  --line:rgba(58,155,255,.14); --line-2:rgba(58,155,255,.30);
-  --ink:#d3efe9; --ink-2:#eafffb; --dim:#6f9089;
-  --green:#39d98a; --amber:#f5b23d; --red:#ff6b6b; --cyan:#57d7ea;
-  --acc:#3a9bff;
-  --acc-soft:color-mix(in srgb, var(--acc) 12%, transparent);
-  --acc-line:color-mix(in srgb, var(--acc) 30%, transparent);
-  --acc-glow:color-mix(in srgb, var(--acc) 45%, transparent);
+  /* Comercia Caja · identidad CYBER (azul eléctrico + neón cian/magenta) */
+  --bg0:#04173e; --bg1:#08296a; --panel:rgba(3,16,44,.62); --panel-2:rgba(2,12,34,.90);
+  --line:rgba(120,190,255,.20); --line-2:rgba(120,190,255,.36);
+  --ink:#cfe6fb; --ink-2:#eaf6ff; --dim:#7f9cc4;
+  --green:#33ff9e; --amber:#ffcf3a; --red:#ff5d7a; --cyan:#00e6ff;
+  --acc:#00e6ff;            /* cian neón (primario) */
+  --mg:#ff2bd6;             /* magenta neón (secundario) */
+  --acc-soft:color-mix(in srgb, var(--acc) 14%, transparent);
+  --acc-line:color-mix(in srgb, var(--acc) 32%, transparent);
+  --acc-glow:color-mix(in srgb, var(--acc) 55%, transparent);
   --mono: ui-monospace,"SFMono-Regular","Cascadia Mono","Segoe UI Mono",Menlo,monospace;
   --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
@@ -20,7 +22,10 @@
 html, body { height: 100%; }
 body {
   margin: 0;
-  background: radial-gradient(120% 80% at 50% -8%, #0a1a33 0%, var(--bg1) 44%, var(--bg0) 100%) fixed;
+  background:
+    radial-gradient(70% 50% at 26% -12%, rgba(0,150,255,.42), transparent 62%),
+    radial-gradient(60% 45% at 92% -6%, rgba(255,43,214,.16), transparent 60%),
+    linear-gradient(180deg, #0b3f9c 0%, var(--bg1) 48%, var(--bg0) 100%) fixed;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 14px;
@@ -435,60 +440,74 @@ a { color: inherit; }
 @media (max-width:600px) { .lp-nav { padding:12px 16px; } .lp-hero { padding:56px 14px 40px; } }
 
 /* ============================================================================
-   Refuerzo visual · SALA DE COMANDO (v3.1 · afinado)
-   3 diales, con la intensidad bajada un punto (más elegante, menos cargado):
-   (1) números teal · (2) esquinas de tablero · (3) glow/contraste.
-   Toca sólo clases compartidas → alcanza toda la app sin cambiar el layout.
+   Comercia Caja · CAPA CYBER (azul eléctrico · neón cian/magenta · HUD)
+   Textura de tablero digital sobre TODA la app: grilla de circuito, scanlines
+   sutiles, corchetes HUD, glow neón y mono en números/headers. Sólo clases
+   compartidas → no cambia el layout.
    ========================================================================== */
-
-/* Dial 3 · contraste medido: bordes teal apenas más marcados, glow contenido. */
 :root {
-  --line: rgba(58,155,255,.16);
-  --acc-glow: color-mix(in srgb, var(--acc) 50%, transparent);
-  --brk: color-mix(in srgb, var(--acc) 45%, transparent); /* color de las esquinas */
+  --line: rgba(120,190,255,.20);
+  --acc-glow: color-mix(in srgb, var(--acc) 55%, transparent);
+  --brk: color-mix(in srgb, var(--acc) 60%, transparent);
 }
 
-/* Grilla técnica de fondo (mission-control), desvanecida con máscara radial. */
+/* Grilla de circuito (fina y brillante), desvanecida hacia abajo. */
 body::before {
   content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
   background-image:
-    linear-gradient(rgba(58,155,255,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(58,155,255,.045) 1px, transparent 1px);
-  background-size:46px 46px;
-  -webkit-mask-image: radial-gradient(135% 92% at 50% -6%, #000 24%, transparent 76%);
-          mask-image: radial-gradient(135% 92% at 50% -6%, #000 24%, transparent 76%);
+    linear-gradient(rgba(120,190,255,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,190,255,.10) 1px, transparent 1px);
+  background-size:34px 34px;
+  -webkit-mask-image: radial-gradient(135% 92% at 50% -4%, #000 30%, transparent 80%);
+          mask-image: radial-gradient(135% 92% at 50% -4%, #000 30%, transparent 80%);
+}
+/* Scanlines de pantalla (sutiles, para jornada larga). */
+body::after {
+  content:""; position:fixed; inset:0; z-index:60; pointer-events:none;
+  background: repeating-linear-gradient(180deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.13) 2px 3px);
+  mix-blend-mode: multiply;
 }
 
-/* Dial 2 · esquinas de tablero (corner-brackets) en las cards, más discretas.
-   Se dibujan con background-image → no se recortan con overflow. */
+/* Shell en azul eléctrico (sidebar + topbar), coherente con el fondo. */
+.cx-side { background:#041233; }
+.cx-topbar { background:linear-gradient(180deg, rgba(4,20,52,.78), rgba(4,20,52,.32)); border-bottom-color:var(--acc-line); }
+.cx-mark, .lp-mk { background:linear-gradient(150deg, var(--acc), var(--mg)); color:#02121a; box-shadow:0 0 16px var(--acc-glow); }
+.cx-tick { background:linear-gradient(180deg, var(--acc), var(--mg)); box-shadow:0 0 10px var(--acc-glow); }
+
+/* Cards: corchetes HUD cian + realce + glow neón al hover. */
 .card {
   position: relative;
   background-color: var(--panel);
   background-image:
-    linear-gradient(var(--brk), var(--brk)), linear-gradient(var(--brk), var(--brk)),
-    linear-gradient(var(--brk), var(--brk)), linear-gradient(var(--brk), var(--brk)),
-    linear-gradient(var(--brk), var(--brk)), linear-gradient(var(--brk), var(--brk)),
-    linear-gradient(var(--brk), var(--brk)), linear-gradient(var(--brk), var(--brk));
+    linear-gradient(var(--brk),var(--brk)),linear-gradient(var(--brk),var(--brk)),
+    linear-gradient(var(--brk),var(--brk)),linear-gradient(var(--brk),var(--brk)),
+    linear-gradient(var(--brk),var(--brk)),linear-gradient(var(--brk),var(--brk)),
+    linear-gradient(var(--brk),var(--brk)),linear-gradient(var(--brk),var(--brk));
   background-repeat: no-repeat;
-  background-size:
-    11px 1px, 1px 11px,  11px 1px, 1px 11px,
-    11px 1px, 1px 11px,  11px 1px, 1px 11px;
+  background-size: 13px 1.5px,1.5px 13px, 13px 1.5px,1.5px 13px, 13px 1.5px,1.5px 13px, 13px 1.5px,1.5px 13px;
   background-position:
-    left 9px top 9px,     left 9px top 9px,
-    right 9px top 9px,    right 9px top 9px,
-    left 9px bottom 9px,  left 9px bottom 9px,
-    right 9px bottom 9px, right 9px bottom 9px;
-  box-shadow: inset 0 1px 0 rgba(58,155,255,.07);
+    left 8px top 8px, left 8px top 8px, right 8px top 8px, right 8px top 8px,
+    left 8px bottom 8px, left 8px bottom 8px, right 8px bottom 8px, right 8px bottom 8px;
+  box-shadow: inset 0 0 0 1px rgba(0,230,255,.06), inset 0 1px 0 rgba(0,230,255,.10);
   transition: border-color .18s ease, box-shadow .18s ease;
 }
 .card:hover {
   border-color: var(--acc-line);
-  box-shadow: inset 0 1px 0 rgba(58,155,255,.11), 0 10px 32px rgba(0,0,0,.28);
+  box-shadow: inset 0 0 0 1px rgba(0,230,255,.16), 0 0 22px rgba(0,230,255,.14), 0 12px 34px rgba(0,0,0,.32);
 }
 
-/* Dial 1 · números clave en teal, con brillo suave (los sin color semántico). */
-.kpi-v { color: var(--acc); text-shadow: 0 0 16px color-mix(in srgb, currentColor 38%, transparent); }
-.mp-total .n, .tot.grand .tnum { text-shadow: 0 0 15px color-mix(in srgb, currentColor 32%, transparent); }
+/* Encabezados y etiquetas en mono (terminal). */
+.cx-panel-h h3 { font-family:var(--mono); color:var(--acc); letter-spacing:.20em; text-shadow:0 0 8px color-mix(in srgb,var(--acc) 40%,transparent); }
+.kpi-l { font-family:var(--mono); }
 
-/* Título de la topbar con halo teal tenue. */
-.cx-title { text-shadow: 0 0 16px color-mix(in srgb, var(--acc) 16%, transparent); }
+/* Números clave: cian neón con glow marcado (mono ya viene del .kpi-v base). */
+.kpi-v { color: var(--acc); text-shadow: 0 0 18px color-mix(in srgb, currentColor 55%, transparent); }
+.mp-total .n, .tot.grand .tnum { text-shadow: 0 0 18px color-mix(in srgb, currentColor 45%, transparent); }
+
+/* Título de la topbar con glitch neón (cian + magenta). */
+.cx-title {
+  font-family:var(--mono); letter-spacing:.02em;
+  text-shadow: 0 0 14px color-mix(in srgb, var(--acc) 45%, transparent),
+               1.5px 0 0 color-mix(in srgb, var(--mg) 45%, transparent),
+              -1.5px 0 0 color-mix(in srgb, var(--acc) 30%, transparent);
+}
